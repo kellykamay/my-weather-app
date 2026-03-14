@@ -1,6 +1,7 @@
 import Card from './Card';
 import { getWeather } from '../../api';
 import { useSuspenseQuery } from '@tanstack/react-query';
+import WeatherIcon from './WeatherIcon';
 
 export interface DailyForecastProps {
 }
@@ -8,7 +9,7 @@ export interface DailyForecastProps {
 export default function DailyForecast ({}: DailyForecastProps) {
     const { data } = useSuspenseQuery({
     queryKey: ['weather'],
-    queryFn: () => getWeather({lat: 33.44, lon: -94.04})
+    queryFn: () => getWeather({lat: 14.39, lon: 120.88})
   })
   
   return (
@@ -19,7 +20,7 @@ export default function DailyForecast ({}: DailyForecastProps) {
                   undefined,
                   {weekday: "short"}
                 )}</p>
-                <img className="size-8" src={`https://openweathermap.org/img/wn/${day.weather[0].icon}.png`} alt="Weather Icon"/>
+                <WeatherIcon src={day.weather[0].icon}/>
                 <p>{Math.round(day.temp.day)}°F</p>
                 <p className='text-gray-500/75'>{Math.round(day.temp.min)}°F</p>
                 <p className='text-gray-500/75'>{Math.round(day.temp.max)}°F</p>
