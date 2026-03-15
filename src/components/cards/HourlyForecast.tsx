@@ -2,19 +2,21 @@ import Card from './Card';
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { getWeather } from '../../api';
 import WeatherIcon from './WeatherIcon';
+import type { CoordsType } from '../../../types';
 
 export interface HourlyForecastProps {
+  coords :CoordsType
 }
 
-export default function HourlyForecast ({}: HourlyForecastProps) {
+export default function HourlyForecast ({coords}: HourlyForecastProps) {
   const { data } = useSuspenseQuery({
-    queryKey: ['weather'],
-    queryFn: () => getWeather({lat: 14.39, lon: 120.88})
+    queryKey: ['weather', coords],
+    queryFn: () => getWeather({lat: coords.lat, lon: coords.lon})
   })
   return (
     <Card title='Hourly Forecast (48 Hours)' childrenClassName='flex gap-6 overflow-x-scroll'>
       {data.hourly.map((hour) => (
-        <div className='flex flex-col gap-2 items-center p-2'>
+        <div className='flex flex-col gap-2 items-center p-2' key={hour.dt}>
           <p className='whitespace-nowrap'>
             {new Date(hour.dt * 1000).toLocaleTimeString(
               undefined, {

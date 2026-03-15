@@ -1,4 +1,4 @@
-export type Coords = {
+export type CoordsType = {
   lat: number
   lon: number
 }
