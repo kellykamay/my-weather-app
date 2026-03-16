@@ -5,31 +5,35 @@ import WeatherIcon from './WeatherIcon';
 import type { CoordsType } from '../../../types';
 
 export interface HourlyForecastProps {
-  coords :CoordsType
+  coords : CoordsType
 }
 
 export default function HourlyForecast ({coords}: HourlyForecastProps) {
-  const { data } = useSuspenseQuery({
-    queryKey: ['weather', coords],
-    queryFn: () => getWeather({lat: coords.lat, lon: coords.lon})
+ const { data } = useSuspenseQuery({
+    queryKey: ["weather", coords],
+    queryFn: () => getWeather({ lat: coords.lat, lon: coords.lon }),
   })
   return (
-    <Card title='Hourly Forecast (48 Hours)' childrenClassName='flex gap-6 overflow-x-scroll'>
+    <Card
+      title="Hourly Forecast (48 Hours)"
+      childrenClassName="flex gap-6 overflow-x-scroll"
+    >
       {data.hourly.map((hour) => (
-        <div className='flex flex-col gap-2 items-center p-2' key={hour.dt}>
-          <p className='whitespace-nowrap'>
-            {new Date(hour.dt * 1000).toLocaleTimeString(
-              undefined, {
-                hour: "numeric",
-                minute: "2-digit",
-                hour12: true
-              }
-            )}
+        <div
+          key={hour.dt}
+          className="flex flex-col 2xl:justify-between gap-2 items-center p-2"
+        >
+          <p className="whitespace-nowrap 2xl:scale-110">
+            {new Date(hour.dt * 1000).toLocaleTimeString(undefined, {
+              hour: "numeric",
+              minute: "2-digit",
+              hour12: true,
+            })}
           </p>
-          <WeatherIcon src={hour.weather[0].icon}/>
-          <p >{Math.round(hour.temp)}°F</p>
+          <WeatherIcon className="2xl:size-10" src={hour.weather[0].icon} />
+          <p className="2xl:scale-110">{Math.round(hour.temp)}°F</p>
         </div>
       ))}
     </Card>
-  );
+  )
 }
