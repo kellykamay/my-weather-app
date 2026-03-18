@@ -9,7 +9,7 @@ export default function LightDarkToggle() {
   return (
     <div className="flex items-center gap-2">
       <Sun className="size-5" />
-      <Switch checked={theme === "dark"} onCheckedChange={toggleTheme} />
+      <Switch id="theme-switch" className="invert" checked={theme === "dark"} onCheckedChange={toggleTheme} /> 
       <Moon className="size-5" />
     </div>
   )

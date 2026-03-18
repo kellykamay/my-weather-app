@@ -4,7 +4,7 @@ import CurrentWeather from "./components/cards/CurrentWeather"
 import AdditionalInfo from "./components/cards/AdditionalInfo"
 import Map from "./components/Map"
 import { Suspense, useState } from "react"
-import type { CoordsType } from "../types"
+import type { CoordsType } from "..//types"
 import LocationDropdown from "./components/dropdowns/LocationDropdown"
 import { useQuery } from "@tanstack/react-query"
 import { getGeocode } from "./api"
@@ -18,8 +18,6 @@ import SidePanel from "./components/SidePanel"
 import Hamburger from "/src/assets/hamburger.svg?react"
 import MobileHeader from "./components/MobileHeader"
 import LightDarkToggle from "./components/LightDarkToggle"
-// import MobileHeader from "./components/MobileHeader"
-// import LightDarkToggle from "./components/LightDarkToggle"
 
 function App() {
   const [coordinates, setCoords] = useState<CoordsType>({ lat: 50, lon: 45 })
@@ -65,7 +63,7 @@ function App() {
               onClick={() => setIsSidePanelOpen(true)}
               className="hidden xs:block"
             >
-              <Hamburger className="size-6 lg:hidden invert" />
+              <Hamburger className="size-6 lg:hidden" />
             </button>
           </div>
         </div>
