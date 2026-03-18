@@ -9,7 +9,7 @@ export interface MapTypeDropdownProps {
 export default function MapTypeDropdown ({mapType, setMapType}: MapTypeDropdownProps) {
   return (
     <Select value={mapType} onValueChange={(value) => setMapType(value)}>
-      <SelectTrigger className="w-[180px]">
+      <SelectTrigger className="w-full xs:w-[180px]">
         <SelectValue placeholder="City" />
       </SelectTrigger>
       <SelectContent className="z-1001">

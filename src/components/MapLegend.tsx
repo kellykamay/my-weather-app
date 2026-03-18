@@ -1,25 +1,35 @@
-import * as React from 'react';
-
-export interface MapLegendProps {
-    mapType: string
+type Props = {
+  mapType: string
 }
 
-export default function MapLegend ({mapType}: MapLegendProps) {
-    const data = mapTypeData[mapType]
+export default function MapLegend({ mapType }: Props) {
+  const data = mapTypeData[mapType]
 
-    const maxValue = data.stops[data.stops.length - 1].value
-    const gradientStops = data.stops.map(stop => `${stop.color} ${(stop.value / maxValue) * 100}%`).join(', ')
+  const maxValue = data.stops[data.stops.length - 1].value
+
+  const gradientStops = data.stops
+    .map((stop) => `${stop.color} ${(stop.value / maxValue) * 100}%`)
+    .join(", ")
 
   return (
-    <div className='absolute top-4 right-4 z-1000 w-96 rounded-xl shadow-lg p-4 bg-background/50 border boder-accent/70 flex flex-col gap-3'>
-      <h3 className='text-sm font-semibold text-foreground'>{data.title}</h3>
-      <div className='w-full h-6 rounded-xl border border-accent/70' style={{background: `linear-gradient(to right, ${gradientStops})`}} />
-      <div className='flex justify-between text-xs text-foreground'>
-        <span>{data.stops[0].value} {data.unit}</span>
-        <span>{data.stops[data.stops.length - 1].value} {data.unit}</span>
+    <div className="absolute top-4 right-4 z-1000 w-48 xs:w-96 rounded-xl shadow-lg p-4 bg-background/50 border border-accent/70 flex flex-col gap-4">
+      <h3 className="text-sm font-semibold text-foreground">{data.title}</h3>
+      <div
+        className="w-full h-6 rounded-xl border border-accent/70"
+        style={{
+          background: `linear-gradient(to right, ${gradientStops})`,
+        }}
+      />
+      <div className="flex justify-between text-xs text-foreground">
+        <span>
+          {data.stops[0].value} {data.unit}
+        </span>
+        <span>
+          {data.stops[data.stops.length - 1].value} {data.unit}
+        </span>
       </div>
     </div>
-  );
+  )
 }
 
 const mapTypeData: Record<

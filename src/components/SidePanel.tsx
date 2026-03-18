@@ -1,41 +1,44 @@
-import { Suspense, type Dispatch, type SetStateAction } from "react";
-import type { CoordsType } from "../../types";
-import { useSuspenseQuery } from "@tanstack/react-query";
-import { getAirPollution } from "../api";
-import Card from "./cards/Card";
-import { Slider } from "./ui/slider";
-import clsx from "clsx";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./ui/tooltip";
+import { getAirPollution } from "../api"
+import type { CoordsType } from "../../types"
+import { useSuspenseQuery } from "@tanstack/react-query"
+import { Suspense, type Dispatch, type SetStateAction } from "react"
+import Card from "./cards/Card"
+import { Slider } from "./ui/slider"
+import clsx from "clsx"
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./ui/tooltip"
 import Information from "/src/assets/information.svg?react"
 import Chevron from "/src/assets/ChevronLeft.svg?react"
-import SidePanelSkeleton from "./skeletons/SidePanelSkeleton";
+import SidePanelSkeleton from "./skeletons/SidePanelSkeleton"
 
 type Props = {
-  coords: CoordsType,
+  coords: CoordsType
   isSidePanelOpen: boolean
   setIsSidePanelOpen: Dispatch<SetStateAction<boolean>>
 }
 
-export default function SidePanel (props: Props) {
-
+export default function SidePanel(props: Props) {
   const { isSidePanelOpen, setIsSidePanelOpen } = props
-  
   return (
-    <div className={clsx("fixed top-0 right-0 h-screen w-90 shadow-md bg-sidebar z-1001 px-8 py-4 overflow-y-scroll transition-transform duration-300 lg::translate-x-0!", isSidePanelOpen ? 'translate-x-0' : 'translate-x-full')}>
+    <div
+      className={clsx(
+        "fixed top-0 right-0 h-screen w-(--sidebar-width) shadow-md bg-sidebar z-1001 py-8 px-4 overflow-y-scroll transition-transform duration-300 lg:translate-x-0!",
+        isSidePanelOpen ? "translate-x-0" : "translate-x-full"
+      )}
+    >
       <button onClick={() => setIsSidePanelOpen(false)}>
-        <Chevron className="size-8 invert -ml-2"/>
+        <Chevron className="size-8 -ml-2 lg:hidden invert" />
       </button>
       <Suspense fallback={<SidePanelSkeleton />}>
-        <AirPollution {...props}/>
+        <AirPollution {...props} />
       </Suspense>
     </div>
-  );
+  )
 }
 
-function AirPollution({coords}: Props){
+function AirPollution({ coords }: Props) {
   const { data } = useSuspenseQuery({
-    queryKey: ['pollution', coords],
-    queryFn : () => getAirPollution(coords)
+    queryKey: ["pollution", coords],
+    queryFn: () => getAirPollution(coords),
   })
 
   return (
@@ -47,7 +50,7 @@ function AirPollution({coords}: Props){
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger>
-              <Information className="size-4 invert" />
+              <Information className="size-4" />
             </TooltipTrigger>
             <TooltipContent className="z-2000">
               <p className="max-w-xs">
@@ -57,21 +60,25 @@ function AirPollution({coords}: Props){
               </p>
             </TooltipContent>
           </Tooltip>
-        </TooltipProvider>
+          </TooltipProvider> 
       </div>
       {Object.entries(data.list[0].components).map(([key, value]) => {
-        const pollutant = airQualityRanges[key.toUpperCase() as keyof typeof airQualityRanges]
+        const pollutant =
+          airQualityRanges[key.toUpperCase() as keyof typeof airQualityRanges]
 
-        const max = Math.max(pollutant['Very Poor'].min, value)
+        const max = Math.max(pollutant["Very Poor"].min, value)
 
         const currentLevel = (() => {
-          for(const [level, range] of Object.entries(pollutant)){
-            if(value >= range.min && (range.max === null || value <= range.max))
-          return level
+          for (const [level, range] of Object.entries(pollutant)) {
+            if (
+              value >= range.min &&
+              (range.max === null || value <= range.max)
+            )
+              return level
           }
           return "Very Poor"
         })()
-        
+
         const qualityColor = (() => {
           switch (currentLevel) {
             case "Good":
@@ -90,34 +97,45 @@ function AirPollution({coords}: Props){
         })()
 
         return (
-          <Card key={key} className="hover:scale-105 transform-transform duration-300 from-sidebar-accent to-sidebar-accent/60 gap-0!">
+          <Card
+            key={key}
+            childrenClassName="flex flex-col gap-3"
+            className="hover:scale-105 transition-transform duration-300 from-sidebar-accent to-sidebar-accent/60 gap-0!"
+          >
             <div className="flex justify-between">
               <div className="flex items-center gap-2">
                 <span className="text-lg font-bold capitalize">{key}</span>
-                    <TooltipProvider>
-                      <Tooltip>
-                        <TooltipTrigger>
-                          <Information className="size-4 invert" />
-                        </TooltipTrigger>
-                        <TooltipContent className="z-2001">
-                          <p className="max-w-xs">
-                            Concentration of{" "}
-                            {pollutantNameMapping[key.toUpperCase() as Pollutant]}
-                          </p>
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
+                <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger>
+                    <Information className="size-4" />
+                  </TooltipTrigger>
+                  <TooltipContent className="z-2000">
+                    <p className="max-w-xs">
+                      Concentration of{" "}
+                      {pollutantNameMapping[key.toUpperCase() as Pollutant]}
+                    </p>
+                  </TooltipContent>
+                </Tooltip>
+                </TooltipProvider>
               </div>
               <span className="text-lg font-semibold">{value}</span>
             </div>
-            <Slider min={0} max={max} value={[value]} disabled/>
-            <div className="flex justify-between text-xs pt-1">
+            <Slider min={0} max={max} value={[value]} disabled />
+            <div className="flex justify-between text-xs">
               <p>0</p>
               <p>{max}</p>
             </div>
             <div className="flex justify-between">
-              {Object.keys(pollutant).map(quality => (
-                <span className={clsx("px-2 py-1 rounded-md text-xs font-medium", quality === currentLevel ? qualityColor : 'bg-muted text-muted-foreground')}>
+              {Object.keys(pollutant).map((quality) => (
+                <span
+                  className={clsx(
+                    "px-2 py-1 rounded-md text-xs font-medium",
+                    quality === currentLevel
+                      ? qualityColor
+                      : "bg-muted text-muted-foreground"
+                  )}
+                >
                   {quality}
                 </span>
               ))}
